@@ -1,0 +1,23 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/erp_logistico
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+
+server:
+  port: 8081
+
+api:
+  oauth:
+    url: http://localhost:8080
+    realm: kanban
+    role-map-keys:
+      - "resource_access"
+      - "realm_access"
+      - "groups"
+    client-id: kanban-rest
+    client-secret: sVVKWPQFBIcw8084pupC1oxq5AdievE4
+    gran-type: client_credentials
+    client-id-users: webapp
