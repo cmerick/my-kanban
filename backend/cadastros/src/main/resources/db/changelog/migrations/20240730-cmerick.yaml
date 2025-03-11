@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20240730-cmerick.yaml
+      author: cmerick
+      changes:
+        - sqlFile:
+            path: db/changelog/sql/create-initial-tables.sql
+      rollback:
+        - sqlFile:
+            path: db/changelog/sql/create-initial-tables-rollback.sql

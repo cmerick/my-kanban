@@ -1,0 +1,49 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- Criação da tabela de usuários
+CREATE TABLE IF NOT EXISTS tb_users (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    keycloak_id VARCHAR(36) NOT NULL UNIQUE,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    status CHAR(1) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    email VARCHAR(255) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS tb_client (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name VARCHAR(100) NOT NULL,
+    status CHAR(1) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS tb_project (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    title VARCHAR(100) NOT NULL,
+    description TEXT,
+    status CHAR(1) NOT NULL,
+    client_id UUID NOT NULL REFERENCES tb_client(id) ON DELETE CASCADE,
+    creator_id UUID NOT NULL REFERENCES tb_users(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE SEQUENCE task_seq;
+
+CREATE TABLE IF NOT EXISTS tb_task (
+    id BIGINT PRIMARY KEY,
+    project_id UUID NOT NULL REFERENCES tb_project(id) ON DELETE CASCADE,
+    creator_id UUID NOT NULL REFERENCES tb_users(id) ON DELETE CASCADE,
+    assigned_to UUID REFERENCES tb_users(id) ON DELETE CASCADE,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    start_date TIMESTAMPTZ,
+    due_date TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    status CHAR(1) NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    parent_task_id BIGINT REFERENCES tb_task(id) ON DELETE CASCADE
+
+);

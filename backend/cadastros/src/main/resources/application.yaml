@@ -1,13 +1,32 @@
-spring:
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:8080/realms/erp_logistico
-          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
-
 server:
   port: 8081
+
+spring:
+  application:
+    name: kanban
+  jpa:
+    properties:
+      hibernate:
+        format_sql: false
+  datasource:
+    username: postgres
+    password: 123
+    url: jdbc:postgresql://localhost:5432/kanban_db
+  liquibase:
+    contexts: dev
+    user: liquibase
+    password: 123
+  security:
+    oauth2:
+      resource-server:
+        jwt:
+          issuer-uri: ${api.oauth.url}/realms/${api.oauth.realm}
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+  cloud:
+    config:
+      enabled: false
+    openfeign:
+      lazy-attributes-resolution: true
 
 api:
   oauth:

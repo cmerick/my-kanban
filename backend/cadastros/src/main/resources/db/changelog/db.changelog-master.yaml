@@ -1,0 +1,6 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: liquibase
+  - include:
+      file: db/changelog/migrations/20240730-cmerick.yaml
