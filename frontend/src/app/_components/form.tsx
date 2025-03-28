@@ -7,7 +7,7 @@ import {
     FormProvider,
     UseFormReturn,
 } from 'react-hook-form';
-import AnyObject from '@/helpers/any-object.model';
+import AnyObject from '@/app/_helpers/any-object.model';
 
 type CustomSubmit<T> = (data: T) => Promise<void> | void;
 

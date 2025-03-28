@@ -15,11 +15,9 @@ export function middleware(request: NextRequest) {
         const redirectUrl = request.nextUrl.clone();
 
         redirectUrl.pathname = REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE;
-        console.log(path)
         return NextResponse.redirect(redirectUrl);
     }
     if (authToken && publicRoute && publicRoute.whenAuthenticated === 'redirect') {
-        debugger;
         const redirectUrl = request.nextUrl.clone();
         redirectUrl.pathname = '/';
         return NextResponse.redirect(redirectUrl);
