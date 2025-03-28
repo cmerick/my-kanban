@@ -10,7 +10,6 @@ export class ApiConstructor {
     private async makeRequest(endpoint: string, options: RequestInit) {
         const url = `${this.apiUrl}${endpoint}`;
         const response = await fetch(url, options);
-
         return response.json();
     }
 
@@ -39,7 +38,7 @@ export class ApiConstructor {
     }
 
     // Método PUT
-    async put(endpoint: string, headers: HeadersInit, body: any) {
+    async put(endpoint: string, headers: HeadersInit, body?: any) {
         const options: RequestInit = {
             method: 'PUT',
             headers: {
@@ -47,7 +46,7 @@ export class ApiConstructor {
                 ...headers
 
             },
-            body: JSON.stringify(body),
+            body: body,
         };
         return this.makeRequest(endpoint, options);
     }

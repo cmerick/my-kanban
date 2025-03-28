@@ -16,16 +16,18 @@ import FormInputText from "./form-input-text";
 import { signIn } from "../_services/authentication/auth.service";
 import { Loader2 } from "lucide-react";
 import usePreventAsyncFunction from "../_helpers/prevent-async-function.hook";
+import { clientCreate } from "../_services/client/client.service";
+import { ClientRequestDto } from "../_models/client/client-request.dto";
 interface Props {
     trigger: React.ReactNode;
 }
 
-export default function SignInFormSheet({ trigger }: Props) {
-    const hookFormMethods = useForm<SignInDto>();
+export default function ClientNewFormSheet({ trigger }: Props) {
+    const hookFormMethods = useForm<ClientRequestDto>();
 
-    const _submit = async (data: SignInDto) => {
+    const _submit = async (data: ClientRequestDto) => {
         try {
-            await signIn(data)
+            await clientCreate(data)
         } catch (errors: any) {
             console.log(errors)
         }
@@ -46,10 +48,8 @@ export default function SignInFormSheet({ trigger }: Props) {
                         <SheetTitle>Access your account</SheetTitle>
                     </SheetHeader>
                     <div className="flex flex-col gap-2 mx-8 ">
-                        <FormInputText className="" placeholder="username" autoComplete='username' type="text" name="username" />
-                        <FormInputText placeholder="password" autoComplete='password' type="password" name="password" />
-                        <Link href={''}> <small>Forgot my password</small> </Link>
-                        <Button>{!isUnlock && <Loader2 className="animate-spin" visibility={!isUnlock ? 'visible' : 'hidden'} />} Sign in</Button>
+                        <FormInputText className="" placeholder="name" autoComplete='name' type="text" name="name" />
+                        <Button>{!isUnlock && <Loader2 className="animate-spin" visibility={!isUnlock ? 'visible' : 'hidden'} />} Create</Button>
                     </div>
                 </Form>
             </SheetContent>

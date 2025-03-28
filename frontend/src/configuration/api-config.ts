@@ -1,7 +1,7 @@
 import { ApiConstructor } from "@/app/_util/fetch.util";
 import { cookies } from "next/headers";
 
-export const API_URL: string = process.env.API_ORL ?? "";
+export const API_URL: string = process.env.API_URL ?? "";
 
 const cookie = await cookies();
 
