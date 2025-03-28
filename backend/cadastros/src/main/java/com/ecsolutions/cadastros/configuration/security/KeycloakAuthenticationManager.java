@@ -2,8 +2,6 @@ package com.ecsolutions.cadastros.configuration.security;
 
 import com.ecsolutions.cadastros.model.attributes.SecurityAttributes;
 import com.ecsolutions.cadastros.model.dtos.security.AuthenticatedUser;
-import com.ecsolutions.cadastros.model.dtos.security.KeycloakApplicationAttributes;
-import com.ecsolutions.cadastros.model.enums.TypeAccessKeycloakEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -42,15 +40,13 @@ public class KeycloakAuthenticationManager implements AuthenticationManager {
 
                 var userInfo = this.getUserInfo(jwt, objectMapper);
                 var roles = roles(userInfo, attributes.getRoleMapKeys());
-                var applicationAttributes = keycloakApplicationAttributes(userInfo, objectMapper);
 
                 var user = new AuthenticatedUser(
                         userInfo,
                         tokenType(jwt),
                         authenticationToken.getToken(),
                         realm(jwt),
-                        clientId(jwt),
-                        applicationAttributes
+                        clientId(jwt)
                 );
                 return new UsernamePasswordAuthenticationToken(
                         user,
@@ -70,14 +66,6 @@ public class KeycloakAuthenticationManager implements AuthenticationManager {
         return objectMapper.readValue(json, UserInfo.class);
     }
 
-    @SneakyThrows
-    public KeycloakApplicationAttributes keycloakApplicationAttributes(UserInfo userInfo, ObjectMapper objectMapper) {
-        if (userInfo.getOtherClaims().get(KEYCLOAK_APPLICATION_KEY) instanceof Map<?, ?> claim) {
-            String claimAsString = objectMapper.writeValueAsString(claim);
-            return objectMapper.readValue(claimAsString, KeycloakApplicationAttributes.class);
-        }
-        return KeycloakApplicationAttributes.builder().type(TypeAccessKeycloakEnum.ANONYMOUS).build();
-    }
 
     public String tokenType(Jwt jwt) {
         String typ = (String) jwt.getClaims().get("typ");

@@ -1,8 +1,11 @@
+import SignInFormSheet from "@/app/_components/signin-form-sheet";
+import { Button } from "@/components/ui/button";
 
 export default function SignIn() {
   return (
-    <div className=" flex justify-between items-center w-full ">
-      <h1>Sign in.</h1>
-    </div>
+    <header className="flex justify-between items-center ">
+      <h1 className="">Project Manager</h1>
+      <SignInFormSheet trigger={<Button>Sign in</Button>} />
+    </header>
   );
 }

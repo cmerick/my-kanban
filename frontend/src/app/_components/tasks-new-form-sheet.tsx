@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/sheet"
 
 interface Props {
-    trigger: string;
+    trigger: React.ReactNode;
 }
 
 export default function TasksNewFormSheet({ trigger }: Props) {

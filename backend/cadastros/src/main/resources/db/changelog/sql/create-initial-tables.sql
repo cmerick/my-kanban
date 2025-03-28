@@ -19,6 +19,14 @@ CREATE TABLE IF NOT EXISTS tb_client (
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS tb_task_status (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name VARCHAR(100) NOT NULL,
+    status CHAR(1) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE IF NOT EXISTS tb_project (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     title VARCHAR(100) NOT NULL,
@@ -42,8 +50,9 @@ CREATE TABLE IF NOT EXISTS tb_task (
     start_date TIMESTAMPTZ,
     due_date TIMESTAMPTZ,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    status CHAR(1) NOT NULL,
+    task_status_id UUID NOT NULL REFERENCES tb_task_status(id) ON DELETE CASCADE,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    progress SMALLINT CHECK (progress >= 0 AND progress <= 100),
     parent_task_id BIGINT REFERENCES tb_task(id) ON DELETE CASCADE
 
 );

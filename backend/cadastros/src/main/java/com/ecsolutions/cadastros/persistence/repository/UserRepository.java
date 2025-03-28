@@ -14,5 +14,5 @@ public interface UserRepository extends JpaRepository<User, UUID>, JpaSpecificat
     Optional<User> findByEmail(@Param("email") String email);
 
     @Query(value = "SELECT entity FROM User entity WHERE entity.keycloakId = :keycloakId ")
-    Optional<User> findByKeycloakId(@Param("keycloakId") UUID keycloakId);
+    Optional<User> findByKeycloakId(@Param("keycloakId") String keycloakId);
 }

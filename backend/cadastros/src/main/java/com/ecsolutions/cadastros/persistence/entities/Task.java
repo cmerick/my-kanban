@@ -54,13 +54,16 @@ public class Task implements Serializable {
     @Column(name = "due_date")
     private OffsetDateTime dueDate;
 
+    @Column(name = "progress")
+    private Integer progress;
+
     @Column(name = "created_at", columnDefinition = "TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
     private OffsetDateTime createdAt;
 
     @Column(name = "updated_at", columnDefinition = "TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP")
     private OffsetDateTime updatedAt;
 
-    @Column(name= "status", nullable = false)
-    private SimpleStatusEnum status;
+    @Column(name= "task_status_id", nullable = false)
+    private UUID status;
 
 }

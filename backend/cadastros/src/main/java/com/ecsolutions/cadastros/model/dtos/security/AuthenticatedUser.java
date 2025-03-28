@@ -1,6 +1,5 @@
 package com.ecsolutions.cadastros.model.dtos.security;
 
-import com.ecsolutions.cadastros.model.enums.TypeAccessKeycloakEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,8 +27,6 @@ public class AuthenticatedUser {
     @Getter
     private final String clientId;
 
-    @Getter
-    private final KeycloakApplicationAttributes applicationAttributes;
 
     @JsonIgnore
     public UUID getUserId() {
@@ -39,12 +36,5 @@ public class AuthenticatedUser {
         return null;
     }
 
-    @JsonIgnore
-    public TypeAccessKeycloakEnum getType() {
-        if (null != this.applicationAttributes) {
-            return this.applicationAttributes.getType();
-        }
-        return null;
-    }
 
 }

@@ -2,6 +2,7 @@ package com.ecsolutions.cadastros.persistence.entities;
 
 
 import com.ecsolutions.cadastros.model.enums.SimpleStatusEnum;
+import com.ecsolutions.cadastros.util.converters.SimpleStatusEnumConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,6 +43,7 @@ public class Project implements Serializable {
     private String description;
 
     @Column(name= "status", nullable = false)
+    @Convert(converter = SimpleStatusEnumConverter.class)
     private SimpleStatusEnum status;
 
     @Column(name = "created_at", columnDefinition = "TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)

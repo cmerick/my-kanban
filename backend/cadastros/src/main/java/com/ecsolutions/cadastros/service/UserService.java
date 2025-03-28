@@ -1,20 +1,23 @@
 package com.ecsolutions.cadastros.service;
 
 import com.ecsolutions.cadastros.model.dtos.acesso.UserRegisterRequest;
+import com.ecsolutions.cadastros.model.dtos.acesso.UserResponse;
+import com.ecsolutions.cadastros.model.dtos.acesso.UserSearchRequest;
 import com.ecsolutions.cadastros.model.dtos.keycloak.UserKeycloakRequest;
 import com.ecsolutions.cadastros.model.enums.SimpleStatusEnum;
-import com.ecsolutions.cadastros.model.enums.TypeAccessKeycloakEnum;
+import com.ecsolutions.cadastros.model.mappers.UserMapper;
 import com.ecsolutions.cadastros.persistence.entities.User;
 import com.ecsolutions.cadastros.persistence.repository.UserRepository;
+import com.ecsolutions.cadastros.persistence.specifications.UserSpecification;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.RandomStringGenerator;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -24,12 +27,34 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository repository;
-    private final MessageSource messageSource;
     private final PasswordConstraintService passwordConstraintService;
     private final KeycloakService keycloakService;
+    private final UserMapper mapper;
+
+    public Collection<User> findAll(UserSearchRequest requestEntity) {
+        return repository.findAll(
+                Specification
+                        .where(UserSpecification.likeNome(requestEntity.getUsername()))
+                        .and(UserSpecification.likeEmail(requestEntity.getEmail()))
+                        .and(UserSpecification.status(requestEntity.getStatus()))
+        );
+    }
+
+    public Collection<UserResponse> getAll(UserSearchRequest requestEntity) {
+        return this.mapper.map(this.findAll(requestEntity));
+    }
 
     public Optional<User> findByEmail(String email){
         return this.repository.findByEmail(email);
+    }
+
+    public Optional<User> findById(UUID id) {
+        return this.repository.findById(id);
+    }
+
+    public UserResponse getById(UUID id) {
+        var entity = this.findById(id).orElseThrow(NotFoundException::new);
+        return this.mapper.map(entity);
     }
 
     @Transactional(rollbackOn = Throwable.class)
@@ -37,7 +62,7 @@ public class UserService {
         var emailOp = this.findByEmail(requestEntity.getEmail());
 
         if(emailOp.isPresent()) {
-            throw new BadRequestException(messageSource.getMessage("user.email.exists", null, LocaleContextHolder.getLocale()));
+            throw new BadRequestException("User E-mail already registered");
         }
 
         var hasPassword = StringUtils.isNotBlank(requestEntity.getPassword());
@@ -49,8 +74,7 @@ public class UserService {
                 UserKeycloakRequest.builder()
                         .username(requestEntity.getUsername())
                         .email(requestEntity.getEmail())
-                        .groupsIds(List.of(requestEntity.getGruposId()))
-                        .type(TypeAccessKeycloakEnum.SYSTEM)
+                        .groupsIds(List.of(requestEntity.getGroupsId()))
                         .build()
         );
 
@@ -62,10 +86,8 @@ public class UserService {
                 .build());
     }
 
-    public String randomPassword() {
-        RandomStringGenerator randomPass = new RandomStringGenerator.Builder()
-                .withinRange(new char[]{'0', '9'}, new char[]{'a', 'z'}, new char[]{ 'A', 'Z'})
-                        .build();
-        return randomPass.generate(8);
+    public Optional<User> findByKeycloakId(String keycloakId) {
+        return this.repository.findByKeycloakId(keycloakId);
     }
+
 }

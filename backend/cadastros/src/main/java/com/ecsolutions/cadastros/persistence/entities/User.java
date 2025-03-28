@@ -2,8 +2,12 @@ package com.ecsolutions.cadastros.persistence.entities;
 
 
 import com.ecsolutions.cadastros.model.enums.SimpleStatusEnum;
+import com.ecsolutions.cadastros.util.converters.SimpleStatusEnumConverter;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -36,6 +40,7 @@ public class User implements Serializable {
     private String email;
 
     @Column(name= "status", nullable = false)
+    @Convert(converter = SimpleStatusEnumConverter.class)
     private SimpleStatusEnum status;
 
     @Column(name = "created_at", columnDefinition = "TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
