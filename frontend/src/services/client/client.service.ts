@@ -11,8 +11,7 @@ export async function clientCreate(request: ClientRequestDto): Promise<ClientRes
 }
 
 export async function clientUpdate(id: string, request: ClientRequestDto) {
-    const response = await kanbanApi.put(`/clients/${id}`, request);
-    return response;
+    await kanbanApi.put(`/clients/${id}`, request);
 }
 
 export async function clientFindAll(): Promise<ClientResponseDto[]> {

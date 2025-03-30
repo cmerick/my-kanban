@@ -1,5 +1,5 @@
 'use client'
-import { DataTable, TableAction } from "@/app/_components/data-table"
+import { DataTable } from "@/app/_components/data-table"
 import Form from "@/app/_components/form";
 import usePreventAsyncFunction from "@/app/_helpers/prevent-async-function.hook";
 import ClientResponseDto from "@/app/_models/client/client-response.dto";
@@ -9,11 +9,14 @@ import { Loader2, Plus, Search } from "lucide-react"
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import ClientNewFormSheet from "./client-new-form-sheet";
+import SimpleStatusEnum, { parserSimpleStatus } from "@/app/_models/enum/simple-status.enum";
+import { TableActions } from "@/app/_components/data-table-action";
 
 export default function ClientPageComponent() {
     const [values, setValues] = useState<ClientResponseDto[]>([]);
+    const [editingClient, setEditingClient] = useState<ClientResponseDto | null>(null); // Cliente em edição
+
     const hookFormMethods = useForm<ClientResponseDto>();
-    const columnKeys: (keyof typeof values[0] & string)[] = ['id', 'name', 'createdAt', 'updatedAt', 'status',];  // Chaves como string
 
     const _search = async () => {
         const response = await clientFindAll();
@@ -21,20 +24,63 @@ export default function ClientPageComponent() {
         setValues(response)
     }
 
-    const handleActiveInactive = async (id: string) => {
-        const response = clientToggleStatus(id);
-        _search();
+    const handleActiveInactive = async (id: string | number) => {
+        const response = clientToggleStatus(id as string);
+        await _search();
+    }
+
+    const handleEdit = async (entity: ClientResponseDto) => {
+        setEditingClient(entity);
+    }
+
+    const handleClientEdit = async () => {
+        setEditingClient(null);
+        await _search();
     }
     const { safeFunction: search, isUnlock } = usePreventAsyncFunction(_search);
+
+    const columns = (values: ClientResponseDto[]) => [
+        {
+            accessorKey: "id",
+            header: "",
+            cell: (info: any) => info.getValue(),
+        },
+        {
+            accessorKey: "id",
+            header: "#",
+            cell: (info: any) => info.getValue(),
+        },
+        {
+            accessorKey: "name",
+            header: "Name",
+            cell: (info: any) => info.getValue(),
+        },
+        {
+            accessorKey: "updatedAt",
+            header: "Updated At",
+            cell: (info: any) => new Date(`${info.getValue()}`).toLocaleString(),
+        },
+        {
+            accessorKey: "createdAt",
+            header: "Created At",
+            cell: (info: any) => new Date(`${info.getValue()}`).toLocaleString(),
+        },
+        {
+            accessorKey: "status",
+            header: "Status",
+            cell: (info: any) => `${parserSimpleStatus(`${info.getValue()}` as SimpleStatusEnum)}`,
+        },
+    ];
 
     const actions = [
         {
             name: 'Edit',
-            method: async (id: string) => handleActiveInactive(id)
+            method: async (_id: string, row: ClientResponseDto) => handleEdit(row)
+
         },
         {
             name: 'Change Status',
-            method: async (id: string) => handleActiveInactive(id)
+            method: async (id: string, _row: ClientResponseDto) => handleActiveInactive(id)
         }
     ]
 
@@ -49,7 +95,17 @@ export default function ClientPageComponent() {
                 </Form>
                 <ClientNewFormSheet icon={<Plus size={20} />} triggerLabel={'Add'} onClientCreate={_search} />
             </div>
-            <DataTable columnKeys={columnKeys} data={values ?? []} actions={actions as TableAction<any>[]} idKey={'id'} />
+            <DataTable
+                columns={columns}
+                data={values ?? []}
+                actions={(row) => <TableActions row={row} actions={actions} idKey={'id'} />}
+            />
+            {editingClient && (
+                <ClientNewFormSheet
+                    onClientCreate={handleClientEdit}
+                    client={editingClient}
+                />
+            )}
         </>
     )
 }
