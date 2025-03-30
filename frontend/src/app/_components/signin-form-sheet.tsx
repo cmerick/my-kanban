@@ -13,9 +13,9 @@ import { useForm } from "react-hook-form";
 import Form from "./form";
 import { SignInDto, SignInSchema } from "../_models/authentication/signin.dto";
 import FormInputText from "./form-input-text";
-import { signIn } from "../_services/authentication/auth.service";
 import { Loader2 } from "lucide-react";
 import usePreventAsyncFunction from "../_helpers/prevent-async-function.hook";
+import { signIn } from "@/services/authentication/auth.service";
 interface Props {
     trigger: React.ReactNode;
 }
@@ -27,7 +27,7 @@ export default function SignInFormSheet({ trigger }: Props) {
         try {
             await signIn(data)
         } catch (errors: any) {
-            console.log(errors)
+            console.error(errors)
         }
     }
 

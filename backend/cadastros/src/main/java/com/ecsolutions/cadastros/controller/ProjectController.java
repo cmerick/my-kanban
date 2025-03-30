@@ -23,7 +23,7 @@ public class ProjectController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ProjectResponseDto create(@Valid @RequestBody ProjectRequestDto dto) {
+    public ProjectResponseDto create(@RequestBody ProjectRequestDto dto) {
         return this.projectService.create(dto);
     }
 

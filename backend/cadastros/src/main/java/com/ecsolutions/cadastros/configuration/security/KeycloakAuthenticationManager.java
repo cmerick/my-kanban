@@ -3,6 +3,7 @@ package com.ecsolutions.cadastros.configuration.security;
 import com.ecsolutions.cadastros.model.attributes.SecurityAttributes;
 import com.ecsolutions.cadastros.model.dtos.security.AuthenticatedUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.ws.rs.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.keycloak.representations.UserInfo;
@@ -53,8 +54,9 @@ public class KeycloakAuthenticationManager implements AuthenticationManager {
                         "",
                         roles.stream().map(SimpleGrantedAuthority::new).toList()
                 );
-            } catch (JwtException ignored) {
-                }
+            } catch (JwtException e) {
+                throw new BadRequestException("Token invalido", e);
+            }
         }
 
         return authentication;

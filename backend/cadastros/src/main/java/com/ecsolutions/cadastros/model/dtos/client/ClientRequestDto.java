@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClientRequestDto{
-        @NotBlank private String name;
+        private String name;
 }

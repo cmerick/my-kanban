@@ -23,7 +23,7 @@ public class TaskController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TaskResponseDto create(@Valid @RequestBody TaskRequestDto dto) {
+    public TaskResponseDto create(@RequestBody TaskRequestDto dto) {
         return this.taskService.create(dto);
     }
 

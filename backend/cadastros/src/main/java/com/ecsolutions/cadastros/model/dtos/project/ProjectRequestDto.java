@@ -14,18 +14,13 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ProjectRequestDto {
 
-        @NotNull
         private UUID creatorId;
 
-        @NotNull
         private UUID clientId;
 
-        @NotBlank
         private String title;
 
-        @NotBlank
         private String description;
 
-        @NotNull
         private SimpleStatusEnum status;
 }

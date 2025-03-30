@@ -12,6 +12,5 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TaskStatusRequestDto {
-        @NotBlank
         private String name;
 }

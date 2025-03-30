@@ -23,7 +23,7 @@ public class ClientController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ClientResponseDto create(@Valid @RequestBody ClientRequestDto dto) {
+    public ClientResponseDto create(@RequestBody ClientRequestDto dto) {
         return this.clientService.create(dto);
     }
 

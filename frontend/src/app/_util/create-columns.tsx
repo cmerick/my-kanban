@@ -18,9 +18,8 @@ const columnFormat = (value: any, key: string) => {
 export const createColumns = <T,>(keys: Array<keyof T & string>): ColumnDef<T>[] => {
   return keys.map((key) => ({
     accessorKey: key,
-    header: key.charAt(0).toUpperCase() + key.slice(1), // Capitaliza o header automaticamente
+    header: key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase()), // Capitaliza o header automaticamente
     cell: (info) => {
-      const type = typeof info.getValue();
       const formated = columnFormat(info.getValue(), key); // Formata conforme o tipo
       return <div>{formated}</div>; // JSX para renderizar o valor formatado
     }
