@@ -15,17 +15,19 @@ import { SignInDto, SignInSchema } from "../_models/authentication/signin.dto";
 import FormInputText from "./form-input-text";
 import { Loader2 } from "lucide-react";
 import usePreventAsyncFunction from "../_helpers/prevent-async-function.hook";
-import { signIn } from "@/services/authentication/auth.service";
+import { useAuth } from "@/context/auth-context";
+
 interface Props {
     trigger: React.ReactNode;
 }
 
 export default function SignInFormSheet({ trigger }: Props) {
+    const { login } = useAuth();
     const hookFormMethods = useForm<SignInDto>();
 
     const _submit = async (data: SignInDto) => {
         try {
-            await signIn(data)
+            await login(data)
         } catch (errors: any) {
             console.error(errors)
         }

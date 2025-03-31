@@ -12,8 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -45,8 +47,14 @@ public class ClientService {
 
 
     public List<ClientResponseDto> findAll() {
-        return mapper.map(this.clientRepository.findAll());
+        return mapper.map(this.clientRepository.findAll())
+                .stream()
+                .sorted(
+                        Comparator.comparingInt((ClientResponseDto c) -> c.getStatus().equals(SimpleStatusEnum.ACTIVE) ? 0 : 1) // Ativos vêm primeiro
+                                .thenComparing(ClientResponseDto::getCreatedAt, Comparator.reverseOrder())) // Mais recentes primeiro
+                .collect(Collectors.toList());
     }
+
 
 
     public Client findById(UUID id) {

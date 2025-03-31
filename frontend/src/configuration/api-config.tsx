@@ -3,8 +3,10 @@ import axios from "axios";
 const API_URL: string = process.env.API_URL ?? "";
 
 
-const kanbanApi = axios.create({
+export const kanbanApi = axios.create({
     baseURL: API_URL,
 });
 
-export { kanbanApi };
+export const frontendApi = axios.create({
+    baseURL: 'http://localhost:3000/api'
+})

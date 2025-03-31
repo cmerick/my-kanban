@@ -15,8 +15,8 @@ import usePreventAsyncFunction from "@/app/_helpers/prevent-async-function.hook"
 import Form from "@/app/_components/form";
 import FormInputText from "@/app/_components/form-input-text";
 import { useEffect, useState } from "react";
-import { clientCreate, clientUpdate } from "@/services/client/client.service";
 import ClientResponseDto from "@/app/_models/client/client-response.dto";
+import { frontendApi } from "@/configuration/api-config";
 interface Props {
     icon?: React.ReactNode;
     triggerLabel?: string;
@@ -28,7 +28,6 @@ export default function ClientNewFormSheet({ icon, triggerLabel, onClientCreate,
     const hookFormMethods = useForm<ClientRequestDto>({ defaultValues: client ? { name: client?.name } : undefined });
     const [open, setOpen] = useState(false);
     useEffect(() => {
-        console.log('useEffect')
         if (client && !open) {
             hookFormMethods.reset({ name: client.name });
             setOpen(true);
@@ -40,9 +39,9 @@ export default function ClientNewFormSheet({ icon, triggerLabel, onClientCreate,
     const _submit = async (data: ClientRequestDto) => {
         try {
             if (client) {
-                await clientUpdate(client.id, data);
+                await frontendApi.put(`/clients/${client.id}`, data);
             } else {
-                await clientCreate(data);
+                await frontendApi.post('/clients', data);
             }
             await onClientCreate();
             setOpen(false);
