@@ -2,11 +2,11 @@
 
 import { Controller, useFormContext } from 'react-hook-form';
 import FormInput, { FormInputProps } from './form-Input';
-import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
-type Props = FormInputProps & React.ComponentProps<'text'>;
+type Props = FormInputProps & React.ComponentProps<'textarea'>;
 
-export default function FormInputText({
+export default function FormInputTextArea({
     className,
     name,
     label,
@@ -30,7 +30,7 @@ export default function FormInputText({
                         required={required}
                         error={error}
                     >
-                        <Input
+                        <Textarea
                             id={name}
                             {...field}
                             className={className}

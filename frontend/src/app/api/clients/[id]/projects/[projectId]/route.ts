@@ -1,13 +1,13 @@
 'use server'
-import { ClientRequestDto } from "@/app/_models/client/client-request.dto";
 import { BackendResponseErrrorType } from "@/app/_models/errors/bad-response-error";
+import { ProjectRequestDto } from "@/app/_models/projects/project-request.dto";
 import { kanbanApi } from "@/configuration/api-config";
 import { AxiosError } from "axios";
 import { NextRequest } from "next/server";
 
 interface Params {
     params: Promise<{
-        id: string;
+        projectId: string;
     }>
 }
 
@@ -18,11 +18,11 @@ export async function PUT(request: NextRequest, { params }: Params) {
     }
     try {
 
-        const data = await request.json() as ClientRequestDto;
+        const data = await request.json() as ProjectRequestDto;
 
-        const { id } = await params;
+        const { projectId } = await params;
 
-        const response = await kanbanApi.put(`/clients/${id}`, data, {
+        const response = await kanbanApi.put(`/projects/${projectId}`, data, {
             headers: {
                 "Authorization": `Bearer ${authToken}`
             }

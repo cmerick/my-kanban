@@ -1,11 +1,16 @@
 'use server'
-import { ClientRequestDto } from "@/app/_models/client/client-request.dto";
-import ClientResponseDto from "@/app/_models/client/client-response.dto";
 import { BackendResponseErrrorType } from "@/app/_models/errors/bad-response-error";
+import { ProjectRequestDto } from "@/app/_models/projects/project-request.dto";
+import ProjectResponseDto from "@/app/_models/projects/project-response.dto";
 import { kanbanApi } from "@/configuration/api-config";
 import { AxiosError } from "axios";
 import { NextRequest } from "next/server";
 
+interface Params {
+    params: Promise<{
+        id: string;
+    }>
+}
 
 export async function POST(request: NextRequest) {
     const authToken = request.cookies.get('token')?.value;
@@ -14,9 +19,9 @@ export async function POST(request: NextRequest) {
     }
     try {
 
-        const data = await request.json() as ClientRequestDto;
+        const data = await request.json() as ProjectRequestDto;
 
-        const response = await kanbanApi.post(`/clients`, data, {
+        const response = await kanbanApi.post(`/projects`, data, {
             headers: {
                 "Authorization": `Bearer ${authToken}`
             }
@@ -38,30 +43,26 @@ export async function POST(request: NextRequest) {
 
 }
 
-
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest, { params }: Params) {
     const authToken = request.cookies.get('token')?.value;
-
     if (!authToken) {
         return new Response(JSON.stringify(new Error('Usuário não autorizado')), { status: 401 })
     }
-
     try {
 
+        const { id } = await params;
 
-
-        const result = await kanbanApi.get('/clients', {
+        const response = await kanbanApi.get(`/projects/client/${id}`, {
             headers: {
                 "Authorization": `Bearer ${authToken}`
             }
         })
 
-        const clients = result.data as ClientResponseDto[];
+        const clients = response.data as ProjectResponseDto[];
 
         return new Response(JSON.stringify(clients), { status: 200 })
     } catch (e) {
         const axiosError = e as AxiosError;
-
         const { status, error } = axiosError.response?.data as BackendResponseErrrorType;
 
         if (status) {

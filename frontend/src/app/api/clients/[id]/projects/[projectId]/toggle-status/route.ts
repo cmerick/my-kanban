@@ -1,5 +1,4 @@
 'use server'
-import { ClientRequestDto } from "@/app/_models/client/client-request.dto";
 import { BackendResponseErrrorType } from "@/app/_models/errors/bad-response-error";
 import { kanbanApi } from "@/configuration/api-config";
 import { AxiosError } from "axios";
@@ -7,26 +6,24 @@ import { NextRequest } from "next/server";
 
 interface Params {
     params: Promise<{
-        id: string;
+        projectId: string;
     }>
 }
 
-export async function PUT(request: NextRequest, { params }: Params) {
+export async function DELETE(request: NextRequest, { params }: Params) {
     const authToken = request.cookies.get('token')?.value;
     if (!authToken) {
         return new Response(JSON.stringify(new Error('Usuário não autorizado')), { status: 401 })
     }
     try {
+        const { projectId } = await params;
 
-        const data = await request.json() as ClientRequestDto;
-
-        const { id } = await params;
-
-        const response = await kanbanApi.put(`/clients/${id}`, data, {
+        const response = await kanbanApi.delete(`/projects/${projectId}/toggle-status`, {
             headers: {
                 "Authorization": `Bearer ${authToken}`
             }
         })
+
 
         return new Response(null, { status: 200 })
     } catch (e) {

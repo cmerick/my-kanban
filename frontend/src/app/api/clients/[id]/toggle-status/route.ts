@@ -24,12 +24,10 @@ export async function DELETE(request: NextRequest, { params }: Params) {
             }
         })
 
-        console.log(response)
 
         return new Response(null, { status: 200 })
     } catch (e) {
         const axiosError = e as AxiosError;
-        console.log('aqui')
         const { status, error } = axiosError.response?.data as BackendResponseErrrorType;
 
         if (status) {

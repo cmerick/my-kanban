@@ -7,30 +7,35 @@ import { Button } from "@/components/ui/button";
 import { FolderSymlink, Loader2, Plus, Search } from "lucide-react"
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import ClientNewFormSheet from "./client-new-form-sheet";
 import SimpleStatusEnum, { parserSimpleStatus } from "@/app/_models/enum/simple-status.enum";
 import { TableActions } from "@/app/_components/data-table-action";
 import Link from "next/link";
 import { frontendApi } from "@/configuration/api-config";
 import { mapperList } from "@/app/_util/mapper.util";
+import ProjectResponseDto from "@/app/_models/projects/project-response.dto";
+import ProjectNewFormSheet from "./project-new-form-sheet";
 
-export default function ClientPageComponent() {
-    const [values, setValues] = useState<ClientResponseDto[]>([]);
-    const [editingClient, setEditingClient] = useState<ClientResponseDto | null>(null);
-    const hookFormMethods = useForm<ClientResponseDto>();
+interface Props {
+    id: string
+}
+
+export default function ProjectPageComponent({ id }: Props) {
+    const [values, setValues] = useState<ProjectResponseDto[]>([]);
+    const [editingClient, setEditingClient] = useState<ProjectResponseDto | null>(null);
+    const hookFormMethods = useForm<ProjectResponseDto>();
 
     const _search = async () => {
-        const response = await frontendApi.get('/clients')
+        const response = await frontendApi.get(`/clients/${id}/projects`)
 
-        setValues(mapperList(ClientResponseDto, response.data))
+        setValues(mapperList(ProjectResponseDto, response.data))
     }
 
-    const handleActiveInactive = async (id: string) => {
-        await frontendApi.delete(`clients/${id}/toggle-status`);
+    const handleActiveInactive = async (projectId: string) => {
+        await frontendApi.delete(`clients/${id}/projects/${projectId}/toggle-status`);
         await _search();
     }
 
-    const handleEdit = async (entity: ClientResponseDto) => {
+    const handleEdit = async (entity: ProjectResponseDto) => {
         setEditingClient(entity);
     }
 
@@ -40,7 +45,7 @@ export default function ClientPageComponent() {
     }
     const { safeFunction: search, isUnlock } = usePreventAsyncFunction(_search);
 
-    const columns = (values: ClientResponseDto[]) => [
+    const columns = (values: ProjectResponseDto[]) => [
         {
             accessorKey: "",
             header: "More",
@@ -52,8 +57,8 @@ export default function ClientPageComponent() {
             cell: (info: any) => info.getValue(),
         },
         {
-            accessorKey: "name",
-            header: "Name",
+            accessorKey: "title",
+            header: "Title",
             cell: (info: any) => info.getValue(),
         },
         {
@@ -76,12 +81,12 @@ export default function ClientPageComponent() {
     const actions = [
         {
             name: 'Edit',
-            method: async (_id: string, row: ClientResponseDto) => handleEdit(row)
+            method: async (_id: string, row: ProjectResponseDto) => handleEdit(row)
 
         },
         {
             name: 'Change Status',
-            method: async (id: string, _row: ClientResponseDto) => handleActiveInactive(id)
+            method: async (id: string, _row: ProjectResponseDto) => handleActiveInactive(id)
         }
     ]
 
@@ -94,7 +99,7 @@ export default function ClientPageComponent() {
                 >
                     <Button>{!isUnlock ? <Loader2 className="animate-spin" visibility={!isUnlock ? 'visible' : 'hidden'} type="submit" /> : <Search size={20} />} Search</Button>
                 </Form>
-                <ClientNewFormSheet icon={<Plus size={20} />} triggerLabel={'Add'} onClientCreate={_search} />
+                <ProjectNewFormSheet icon={<Plus size={20} />} triggerLabel={'Add'} onClientCreate={_search} clientId={id} />
             </div>
             <DataTable
                 columns={columns}
@@ -102,9 +107,9 @@ export default function ClientPageComponent() {
                 actions={(row) => <TableActions row={row} actions={actions} idKey={'id'} />}
             />
             {editingClient && (
-                <ClientNewFormSheet
+                <ProjectNewFormSheet
                     onClientCreate={handleClientEdit}
-                    client={editingClient}
+                    project={editingClient}
                 />
             )}
         </>
