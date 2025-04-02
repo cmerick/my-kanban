@@ -43,7 +43,7 @@ public class TaskStatusController {
         return mapper.map(this.clientService.findById(id));
     }
 
-    @PutMapping("/{id}/toggle-status")
+    @DeleteMapping("/{id}/toggle-status")
     public void toggleStatus(@PathVariable UUID id) {
         this.clientService.toggleStatus(id);
     }

@@ -21,6 +21,4 @@ public class ProjectRequestDto {
         private String title;
 
         private String description;
-
-        private SimpleStatusEnum status;
 }

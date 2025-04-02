@@ -9,6 +9,7 @@ import com.ecsolutions.cadastros.persistence.entities.Project;
 import com.ecsolutions.cadastros.persistence.repository.ProjectRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -54,6 +55,10 @@ public class ProjectService {
     public Project findById(UUID id) {
         return this.projectRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Project not found"));
+    }
+
+    public List<ProjectResponseDto> findByClientId(UUID id) {
+        return mapper.map(this.projectRepository.findByClientId(id).orElseThrow(NotFoundException::new));
     }
 
     public void toggleStatus(UUID id) {

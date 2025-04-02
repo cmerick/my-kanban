@@ -39,7 +39,7 @@ public class Project implements Serializable {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description")
     private String description;
 
     @Column(name= "status", nullable = false)

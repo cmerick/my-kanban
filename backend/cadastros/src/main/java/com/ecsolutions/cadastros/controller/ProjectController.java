@@ -42,7 +42,13 @@ public class ProjectController {
         return mapper.map(this.projectService.findById(id));
     }
 
-    @PutMapping("/{id}/toggle-status")
+    @GetMapping("client/{id}")
+    public List<ProjectResponseDto> findByClientId(@PathVariable UUID id) {
+        return this.projectService.findByClientId(id);
+    }
+
+
+    @DeleteMapping("/{id}/toggle-status")
     public void toggleStatus(@PathVariable UUID id) {
         this.projectService.toggleStatus(id);
     }
